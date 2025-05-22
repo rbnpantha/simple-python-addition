@@ -9,6 +9,13 @@ def lambda_handler(event, context=None):
                 "body": "Both 'num1' and 'num2' must be provided."
             }
 
+        # Validate that both inputs are numeric
+        if not isinstance(num1, (int, float)) or not isinstance(num2, (int, float)):
+            return {
+                "statusCode": 400,
+                "body": "'num1' and 'num2' must be numeric values (int or float)."
+            }
+
         result = num1 + num2
         return {
             "statusCode": 200,
@@ -25,7 +32,6 @@ def lambda_handler(event, context=None):
 if __name__ == "__main__":
     import json
 
-    # Read test event from file
     with open("test_event.json") as f:
         event = json.load(f)
 

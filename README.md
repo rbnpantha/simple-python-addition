@@ -41,6 +41,26 @@ It returns the sum of the two numbers in a response object:
 
 ---
 
+
+### ⚠️ Input Validation Added
+
+The function now checks whether both `num1` and `num2` are numeric types (`int` or `float`). If non-numeric values are passed, it returns a `400 Bad Request` with an appropriate error message.
+
+Example:
+```json
+{
+  "num1": "hello",
+  "num2": 10
+}
+```
+
+Returns:
+```json
+{
+  "statusCode": 400,
+  "body": "'num1' and 'num2' must be numeric values (int or float)."
+}
+```
 ## 🚀 How to Run It Locally
 
 ### ✅ Prerequisites
@@ -167,6 +187,18 @@ def test_both_missing():
     response = lambda_handler(event)
     assert response["statusCode"] == 400
     assert "must be provided" in response["body"]
+
+def test_non_numeric_num1():
+    event = {"num1": "abc", "num2": 10}
+    response = lambda_handler(event)
+    assert response["statusCode"] == 400
+    assert "must be numeric" in response["body"]
+
+def test_non_numeric_num2():
+    event = {"num1": 10, "num2": [1, 2, 3]}
+    response = lambda_handler(event)
+    assert response["statusCode"] == 400
+    assert "must be numeric" in response["body"]
 ```
 
 ### ▶️ How to Run the Tests
@@ -199,7 +231,6 @@ test_lambda_function.py ....                  [100%]
 ## 💡 Next Steps
 
 You can extend this tiny project by:
-- Adding input validation to ensure the values are numeric
 - Wrapping it in an API using Flask or FastAPI
 - Deploying to AWS Lambda using the AWS SAM CLI
 

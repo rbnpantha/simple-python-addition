@@ -23,3 +23,15 @@ def test_both_missing():
     response = lambda_handler(event)
     assert response["statusCode"] == 400
     assert "must be provided" in response["body"]
+
+def test_non_numeric_num1():
+    event = {"num1": "abc", "num2": 10}
+    response = lambda_handler(event)
+    assert response["statusCode"] == 400
+    assert "must be numeric" in response["body"]
+
+def test_non_numeric_num2():
+    event = {"num1": 10, "num2": [1, 2, 3]}
+    response = lambda_handler(event)
+    assert response["statusCode"] == 400
+    assert "must be numeric" in response["body"]
