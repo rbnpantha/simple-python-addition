@@ -1,7 +1,6 @@
 # 🧮 Simple Lambda Addition (Python)
 
-This is a basic AWS Lambda-style function written in Python that adds two numbers. 
-It's designed to simulate how AWS Lambda works, and can be **run locally without any AWS services, Docker, or external dependencies**.
+This is a basic AWS Lambda-style function written in Python that adds two numbers. It's designed to simulate how AWS Lambda works, and can be **run locally without any AWS services, Docker, or external dependencies**.
 
 ---
 
@@ -67,7 +66,7 @@ simple_lambda_addition/
 2. Run the lambda function:
 
    ```bash
-   python3 lambda_function.py
+   python lambda_function.py
    ```
 
 3. You’ll see output like:
@@ -133,13 +132,76 @@ if __name__ == "__main__":
 
 ---
 
+## 🧪 Unit Testing with Pytest
+
+You can write tests for the `lambda_handler` function using `pytest`.
+
+### 📝 Create a test file
+
+Create a new file named `test_lambda_function.py` in the same directory and add the following content:
+
+```python
+import pytest
+from lambda_function import lambda_handler
+
+def test_addition_valid_input():
+    event = {"num1": 5, "num2": 7}
+    response = lambda_handler(event)
+    assert response["statusCode"] == 200
+    assert "The sum is 12" in response["body"]
+
+def test_missing_num1():
+    event = {"num2": 7}
+    response = lambda_handler(event)
+    assert response["statusCode"] == 400
+    assert "must be provided" in response["body"]
+
+def test_missing_num2():
+    event = {"num1": 5}
+    response = lambda_handler(event)
+    assert response["statusCode"] == 400
+    assert "must be provided" in response["body"]
+
+def test_both_missing():
+    event = {}
+    response = lambda_handler(event)
+    assert response["statusCode"] == 400
+    assert "must be provided" in response["body"]
+```
+
+### ▶️ How to Run the Tests
+
+1. Install `pytest` (if not already installed):
+
+```bash
+pip install pytest
+```
+
+2. Run the tests from the terminal:
+
+```bash
+pytest test_lambda_function.py
+```
+
+### ✅ Expected Output
+
+```bash
+==== test session starts ====
+collected 4 items
+
+test_lambda_function.py ....                  [100%]
+
+==== 4 passed in 0.03s ====
+```
+
+---
+
 ## 💡 Next Steps
 
 You can extend this tiny project by:
 - Adding input validation to ensure the values are numeric
 - Wrapping it in an API using Flask or FastAPI
 - Deploying to AWS Lambda using the AWS SAM CLI
-- Writing unit tests using `pytest`
 
 ---
 
